@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Introduction: Motivation and Initial Plan</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+    <main>
+	<a href="../index.html">Back</a>
+
+	<h1>Pre-Installation: The First Obstacle</h1>
+
+	<p><em>June 19, 2026</em></p>
+
+	<p>With the vision for CryptoLab taking shape, it was finally time to begin.</p>
+
+	<p>Before touching the operating system, I made sure to back up all of my projects to GitHub. Years of coursework, research notes, cryptographic implementations, and side projects were about to be placed at the mercy of a fresh installation. Having a backup meant I could proceed without worrying about losing anything important.</p>
+
+	<p>The machine chosen for the experiment was my one-year-old laptop, an Asus Vivobook 14 M1405YA. At the time, it was running Ubuntu 22.04.5 LTS, which had served me well throughout my studies and research. Soon, however, it would be replaced by a much more hands-on operating system: Arch Linux.</p>
+
+	<p>I visited the Arch Linux installation guide and spent some time reading through the process. Although the guide was comprehensive, I decided that the best way to learn was to dive in and work through the installation myself.</p>
+
+	<p>I downloaded the latest installation image, `archlinux-2026.06.01-x86_64.iso`, plugged in a blank USB flash drive, and used Rufus to create a bootable installer. Following the recommended settings, I selected the GPT partition scheme, UEFI target system, and FAT32 filesystem.</p>
+
+	<p>With the installation media prepared, I entered the laptop's boot configuration menu. Before proceeding, I verified several settings that would be important for the installation process. UEFI boot was enabled, Secure Boot was disabled, and Fast Boot was turned off. Everything appeared ready.</p>
+
+	<p>I saved the configuration and rebooted.</p>
+
+	<p>A few moments later, I was greeted by Arch Linux's live environment: a single terminal window and very little else.</p>
+
+	<p>There was no graphical installer, no welcome screen, and no obvious next button to press. Just a command prompt waiting for instructions.</p>
+
+	<p>The journey had officially begun.</p>
+
+	<h2>Verifying the Environment</h2>
+
+	<p>Following the installation guide, I first confirmed that the system had booted correctly in UEFI mode.</p>
+
+	<code>cat /sys/firmware/efi/fw_platform_size</code>
+
+
+	<p>The command returned <code>64</code>, confirming that the system was running in 64-bit UEFI mode as expected.</p>
+
+	<p>The next step should have been simple: connect to the internet.</p>
+
+	<p>Instead, it became my first real obstacle.</p>
+
+	<h2>The Wi-Fi Problem</h2>
+
+	<p>On Ubuntu, I had previously relied on a USB Wi-Fi dongle because the laptop's internal wireless card never seemed to function properly. Since I was performing a fresh installation, I decided to investigate whether the issue could finally be resolved.</p>
+
+	<p>Unfortunately, the answer came quickly.</p>
+
+	<p>Running:</p>
+
+	<code>ip link</code>
+
+	<p>showed only the loopback interface, <code>lo</code>. No wireless device was detected.</p>
+
+	<p>To investigate further, I inspected the system's PCI devices:</p>
+
+	<code>lspci -k</code>
+
+	<p>Among the listed hardware was a MediaTek MT7902 Wi-Fi 6 controller.</p>
+
+	<p>At first, this seemed encouraging. At least the hardware was being detected.</p>
+
+	<p>After some research and discussion with ChatGPT, however, I discovered an unfortunate reality: the MT7902 is notoriously unsupported on Linux. While there are community efforts attempting to improve compatibility, there was no practical solution that would allow me to continue with the installation that day.</p>
+
+	<p>The realization was disappointing.</p>
+
+	<p>One of the goals of CryptoLab was to learn Linux, not to spend days reverse-engineering wireless drivers before the operating system was even installed.</p>
+
+	<p>After roughly thirty minutes of investigation, I made a practical decision.</p>
+
+	<p>The USB Wi-Fi dongle would remain.</p>
+
+	<p>Sometimes progress means solving a problem. Other times it means knowing which problems are not worth solving yet.</p>
+
+	<h2>Learning to Connect from the Terminal</h2>
+
+	<p>With the USB adapter plugged back in, networking became much easier.</p>
+
+	<p>Arch Linux ships with <code>iwctl</code>, a terminal-based wireless management tool provided by iwd. Since I had never configured Wi-Fi entirely from the command line before, this became another small learning opportunity.</p>
+
+The process was surprisingly straightforward:
+<ul>
+	<li>Start the interface with <code>iwctl</code>.</li>
+	<li>Use <code>device list</code> to view available wireless devices.</li>
+	<li>Scan for networks using <code>station wlan1 scan</code>.</li>
+	<li>Display available networks with <code>station wlan1 get-networks</code>.</li>	
+	<li>Connect using <code>station wlan1 connect <network-name></code>.</li>
+	<li>Exit the interface and verify connectivity with: <code>ping -c 1 archlinux.org</code></li>
+</ul>
+	<p>When the ping returned successfully, I knew the system was finally online.</p>
+
+	<p>It was a small victory, but the first one of many.</p>
+
+	<h2>Phase Complete</h2>
+
+	<p>Before ending the session, I synchronized the system clock using <code>timedatectl</code></p>
+
+	<p>The machine was now booted correctly, connected to the internet, and ready for installation.</p>
+
+	<p>No partitions had been touched yet. No packages had been installed. CryptoLab did not exist.</p>
+
+	<p>But the environment was prepared, and the first obstacle had already revealed an important lesson: building a custom Linux workstation is rarely a straight path. Even before installation begins, the hardware has its own opinions.</p>
+
+	<p>With the pre-installation phase complete, I was finally ready to start constructing the system itself.</p>
+    </main>
+</body>
+</html>
